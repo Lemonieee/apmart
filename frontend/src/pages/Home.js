@@ -1,13 +1,32 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import data from '../data';
+import axios from 'axios';
+import logger from 'use-reducer-logger';
+
+// useState [variable, func to update the variable]
+// useEffect accepts 2 params:
+// first: function second: array
+// empty array because gonna run the function inside use effect only one time after rendering the component
+// useEffect to call API and get product from backend
 
 function Home() {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      /*call axios.get to send ajax request to the url*/
+      const result = await axios.get('/api/products');
+      /*return product from backend*/
+      setProducts(result.data);
+    };
+    fetchProduct();
+  }, []);
+
   return (
     <div>
       <h1>Featured Products</h1>
 
       <div className="products">
-        {data.products.map((product) => (
+        {products.map((product) => (
           <div className="product" key={product.slug}>
             <Link to={`/product/${product.slug}`}>
               <img src={product.image} alt={product.name} />
