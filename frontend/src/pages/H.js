@@ -1,26 +1,14 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import logger from 'use-reducer-logger';
-
-// useState [variable, func to update the variable]
-// useEffect accepts 2 params:
-// first: function second: array
-// empty array because gonna run the function inside use effect only one time after rendering the component
-// useEffect to call API and get product from backend
-
-/*first param: state
-  second param:  action that change the state and create new state
-  compare three type of action  */
+// import data from '../data';
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
-      /*keep previous state and only update loading to true to show a loading box in UI*/
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      /*keep previous state and only update product coming from the action, payload contains all prod from backend
-       loading to false */
       return { ...state, products: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
@@ -29,14 +17,13 @@ const reducer = (state, action) => {
   }
 };
 
-function Home() {
-  /*use dispatch to dispatch to call an action and update state*/
+function HomeScreen() {
   const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
     products: [],
     loading: true,
     error: '',
   });
-
+  // const [products, setProducts] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
@@ -46,14 +33,14 @@ function Home() {
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: err.message });
       }
+
+      // setProducts(result.data);
     };
     fetchData();
   }, []);
-
   return (
     <div>
       <h1>Featured Products</h1>
-
       <div className="products">
         {loading ? (
           <div>Loading...</div>
@@ -82,5 +69,4 @@ function Home() {
     </div>
   );
 }
-
-export default Home;
+export default HomeScreen;
