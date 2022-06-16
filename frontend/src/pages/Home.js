@@ -4,12 +4,13 @@ import logger from 'use-reducer-logger';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Items from '../components/Items';
+import { Helmet } from 'react-helmet-async';
 
 // useState [variable, func to update the variable]
 // useEffect accepts 2 params:
 // first: function second: array
 // empty array because gonna run the function inside use effect only one time after rendering the component
-// useEffect to call API and get product from backend
+// useEffect to call API and get item from backend
 
 /*first param: state
   second param:  action that change the state and create new state
@@ -21,9 +22,9 @@ const reducer = (state, action) => {
       /*keep previous state and only update loading to true to show a loading box in UI*/
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      /*keep previous state and only update product coming from the action, payload contains all prod from backend
+      /*keep previous state and only update item coming from the action, payload contains all prod from backend
        loading to false */
-      return { ...state, products: action.payload, loading: false };
+      return { ...state, items: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
     default:
@@ -33,8 +34,8 @@ const reducer = (state, action) => {
 
 function Home() {
   /*use dispatch to dispatch to call an action and update state*/
-  const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
-    products: [],
+  const [{ loading, error, items }, dispatch] = useReducer(logger(reducer), {
+    items: [],
     loading: true,
     error: '',
   });
@@ -43,7 +44,7 @@ function Home() {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
       try {
-        const result = await axios.get('/api/products');
+        const result = await axios.get('/api/items');
         dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: err.message });
@@ -54,18 +55,21 @@ function Home() {
 
   return (
     <div>
-      <h1>Featured Products</h1>
+      <Helmet>
+        <title>APMart</title>
+      </Helmet>
+      <h1>Featured items</h1>
 
-      <div className="products">
+      <div className="items">
         {loading ? (
           <div>Loading...</div>
         ) : error ? (
           <div>{error}</div>
         ) : (
           <Row>
-            {products.map((product) => (
-              <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
-                <Items product={product}></Items>
+            {items.map((item) => (
+              <Col key={item.slug} sm={6} md={4} lg={3} className="mb-3">
+                <Items item={item}></Items>
               </Col>
             ))}
           </Row>

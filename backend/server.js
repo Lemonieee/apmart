@@ -5,8 +5,19 @@ import data from './data.js';
 const app = express();
 
 // get two params (url going to serve, function that respond to this API)
-app.get('/api/products', (req, res) => {
-  res.send(data.products);
+app.get('/api/items', (req, res) => {
+  res.send(data.items);
+});
+
+//backend API for returning product information based on the slug of the prod
+//:slug can get slug that user enter to get data about this product from backend
+app.get('/api/items/slug/:slug', (req, res) => {
+  const item = data.items.find((i) => i.slug === req.params.slug);
+  if (item) {
+    res.send(item);
+  } else {
+    res.status(404).send({ message: 'Item Not Found' });
+  }
 });
 
 // get the port from the process
