@@ -1,7 +1,7 @@
 //use for navigation of web pages
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import ItemPage from './pages/ItemPage';
+import ItemsPage from './pages/ItemsPage';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -22,7 +22,7 @@ function App() {
         <main>
           <Container>
             <Routes>
-              <Route path="/item/:slug" element={<ItemPage />} />
+              <Route path="/item/:slug" element={<ItemsPage />} />
               <Route path="/" element={<Home />} />
             </Routes>
           </Container>

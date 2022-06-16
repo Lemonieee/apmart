@@ -5,6 +5,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Items from '../components/Items';
 import { Helmet } from 'react-helmet-async';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
 // useState [variable, func to update the variable]
 // useEffect accepts 2 params:
@@ -62,9 +64,9 @@ function Home() {
 
       <div className="items">
         {loading ? (
-          <div>Loading...</div>
+          <LoadingBox />
         ) : error ? (
-          <div>{error}</div>
+          <MessageBox variant="danger">{error}</MessageBox>
         ) : (
           <Row>
             {items.map((item) => (
