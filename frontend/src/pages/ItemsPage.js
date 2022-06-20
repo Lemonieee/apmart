@@ -3,7 +3,7 @@
 //name of the hook use params
 
 import axios from 'axios';
-import { useEffect, useReducer } from 'react';
+import { useContext, useEffect, useReducer } from 'react';
 import { useParams } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -16,6 +16,7 @@ import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
+import { Store } from '../Store';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -56,6 +57,16 @@ function ItemsPage() {
     fetchData();
     /*when there is a slug changes (user swtich between pages), fetchData dispatch again and get new item from backend*/
   }, [slug]);
+
+  //to add item to cart, need to disptach an action under react context
+  const { state, dispatch: contextDispatch } = useContext(Store);
+
+  const addToCart = () => {
+    contextDispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...item, quantity: 1 },
+    });
+  };
 
   return loading ? (
     <LoadingBox />
@@ -114,7 +125,9 @@ function ItemsPage() {
                 {item.countInStock > 0 && (
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button variant="primary">Add to Cart</Button>
+                      <Button onClick={addToCart} variant="primary">
+                        Add to Cart
+                      </Button>
                     </div>
                   </ListGroup.Item>
                 )}

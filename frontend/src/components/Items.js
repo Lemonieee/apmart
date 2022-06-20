@@ -1,10 +1,21 @@
+import { useContext } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
+import { Store } from '../Store';
 
 function Items(props) {
   const { item } = props;
+  const { state, dispatch: contextDispatch } = useContext(Store);
+
+  const addToCart = () => {
+    contextDispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...item, quantity: 1 },
+    });
+  };
+
   return (
     <Card>
       <Link to={`/item/${item.slug}`}>
@@ -16,7 +27,9 @@ function Items(props) {
         </Link>
         <Rating rating={item.rating} reviewNum={item.reviewNum} />
         <Card.Text>${item.price}</Card.Text>
-        <Button>Add to cart</Button>
+        <Button onClick={addToCart} variant="primary">
+          Add to Cart
+        </Button>
       </Card.Body>
     </Card>
   );

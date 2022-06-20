@@ -1,12 +1,19 @@
 //use for navigation of web pages
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { useContext } from 'react';
+import HomePage from './pages/HomePage';
 import ItemsPage from './pages/ItemsPage';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
+import Badge from 'react-bootstrap/Badge';
+import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
+import { Store } from './Store';
 
 function App() {
+  const { state } = useContext(Store);
+  const { cart } = state;
+
   return (
     <BrowserRouter>
       <div>
@@ -16,6 +23,16 @@ function App() {
               <LinkContainer to="/">
                 <Navbar.Brand>APMart</Navbar.Brand>
               </LinkContainer>
+              <Nav className="me-auto">
+                <Link to="/cart" className="nav-link">
+                  Cart
+                  {cart.cartItems.length > 0 && (
+                    <Badge pill bg="danger">
+                      {cart.cartItems.length}
+                    </Badge>
+                  )}
+                </Link>
+              </Nav>
             </Container>
           </Navbar>
         </header>
@@ -23,7 +40,7 @@ function App() {
           <Container>
             <Routes>
               <Route path="/item/:slug" element={<ItemsPage />} />
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>
         </main>
