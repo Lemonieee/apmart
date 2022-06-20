@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Rating from './Rating';
 import axios from 'axios';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Store } from '../Store';
 
 function Items(props) {

@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import HomePage from './pages/HomePage';
 import ItemsPage from './pages/ItemsPage';
 import CartPage from './pages/CartPage';
+import SignInPage from './pages/SignInPage';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Badge from 'react-bootstrap/Badge';
@@ -42,6 +43,7 @@ function App() {
             <Routes>
               <Route path="/item/:slug" element={<ItemsPage />} />
               <Route path="/cart" element={<CartPage />} />
+              <Route path="/signin" element={<SignInPage />} />
               <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>
