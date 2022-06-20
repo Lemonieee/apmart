@@ -4,7 +4,7 @@
 
 import axios from 'axios';
 import { useContext, useEffect, useReducer } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -35,6 +35,7 @@ const reducer = (state, action) => {
 };
 
 function ItemsPage() {
+  const navigate = useNavigate();
   const params = useParams();
   const { slug } = params;
 
@@ -60,12 +61,21 @@ function ItemsPage() {
 
   //to add item to cart, need to disptach an action under react context
   const { state, dispatch: contextDispatch } = useContext(Store);
+  const { cart } = state;
 
-  const addToCart = () => {
+  const addToCart = async () => {
+    const existItem = cart.cartItems.find((x) => x._id === item._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/items/${item._id}`);
+    if (data.countInStock < quantity) {
+      window.alert('Sorry. Item is out of stock');
+      return;
+    }
     contextDispatch({
-      type: 'CART_ADD_ITEM',
-      payload: { ...item, quantity: 1 },
+      type: 'ADD_TO_CART',
+      payload: { ...item, quantity },
     });
+    navigate('/cart');
   };
 
   return loading ? (
@@ -92,7 +102,7 @@ function ItemsPage() {
                 numReviews={item.numReviews}
               ></Rating>
             </ListGroup.Item>
-            <ListGroup.Item>Pirce : ${item.price}</ListGroup.Item>
+            <ListGroup.Item>Price: RM {item.price}</ListGroup.Item>
             <ListGroup.Item>
               Description:
               <p>{item.description}</p>

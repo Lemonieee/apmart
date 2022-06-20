@@ -20,6 +20,16 @@ app.get('/api/items/slug/:slug', (req, res) => {
   }
 });
 
+//api to get product id
+app.get('/api/items/:id', (req, res) => {
+  const item = data.items.find((x) => x._id === req.params.id);
+  if (item) {
+    res.send(item);
+  } else {
+    res.status(404).send({ message: 'Item Not Found' });
+  }
+});
+
 // get the port from the process
 // process.env.PORT is a convention to get free port, if not, then 5000
 const port = process.env.PORT || 5000;

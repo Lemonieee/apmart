@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { useContext } from 'react';
 import HomePage from './pages/HomePage';
 import ItemsPage from './pages/ItemsPage';
+import CartPage from './pages/CartPage';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Badge from 'react-bootstrap/Badge';
@@ -28,7 +29,7 @@ function App() {
                   Cart
                   {cart.cartItems.length > 0 && (
                     <Badge pill bg="danger">
-                      {cart.cartItems.length}
+                      {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
                     </Badge>
                   )}
                 </Link>
@@ -40,6 +41,7 @@ function App() {
           <Container>
             <Routes>
               <Route path="/item/:slug" element={<ItemsPage />} />
+              <Route path="/cart" element={<CartPage />} />
               <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>
