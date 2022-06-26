@@ -21,7 +21,7 @@ export default function CartScreen() {
   //update cart function
   const updateCart = async (item, quantity) => {
     const { data } = await axios.get(`/api/items/${item._id}`);
-    if (data.countInStock < quantity) {
+    if (data.stock < quantity) {
       window.alert('Sorry. Item is out of stock');
       return;
     }
@@ -77,7 +77,7 @@ export default function CartScreen() {
                       <Button
                         variant="light"
                         onClick={() => updateCart(item, item.quantity + 1)}
-                        disabled={item.quantity === item.countInStock}
+                        disabled={item.quantity === item.stock}
                       >
                         <i className="fas fa-plus-circle"></i>
                       </Button>
