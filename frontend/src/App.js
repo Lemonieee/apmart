@@ -14,6 +14,7 @@ import Badge from 'react-bootstrap/Badge';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Store } from './Store';
+import SignUpPage from './pages/SignUpPage';
 
 function App() {
   const { state, dispatch: contextDispatch } = useContext(Store);
@@ -75,6 +76,7 @@ function App() {
               <Route path="/item/:slug" element={<ItemsPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/signin" element={<SignInPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
               <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>
