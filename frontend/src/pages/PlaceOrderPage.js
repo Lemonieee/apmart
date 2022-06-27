@@ -19,7 +19,7 @@ export default function PlaceOrderPage() {
     cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
   );
   cart.shippingPrice = cart.itemsPrice > 50 ? roundPrice(0) : roundPrice(5);
-  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+  cart.totalPrice = cart.itemsPrice + cart.shippingPrice;
 
   const placeOrder = async () => {};
 
