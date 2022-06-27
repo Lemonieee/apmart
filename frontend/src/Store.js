@@ -11,6 +11,9 @@ const initialState = {
     shippingAddress: localStorage.getItem('shippingAddress')
       ? JSON.parse(localStorage.getItem('shippingAddress'))
       : {},
+    paymentOption: localStorage.getItem('paymentOption')
+      ? localStorage.getItem('paymentOption')
+      : '',
     //come from local storage, if exist, use JSON.parse to convert this things to JavaScript
     cartItems: localStorage.getItem('cartItems')
       ? JSON.parse(localStorage.getItem('cartItems'))
@@ -58,15 +61,21 @@ function reducer(state, action) {
         cart: {
           cartItems: [],
           shippingAddress: {},
+          paymentOption: '',
         },
       };
-    case 'SAVE_SHIPPING_ADDRESS':
+    case 'SHIPPING_ADDRESS':
       return {
         ...state,
         cart: {
           ...state.cart,
           shippingAddress: action.payload,
         },
+      };
+    case 'PAYMENT_METHOD':
+      return {
+        ...state,
+        cart: { ...state.cart, paymentOption: action.payload },
       };
     default:
       return state;

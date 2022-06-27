@@ -28,7 +28,7 @@ export default function CheckoutPage() {
   const submit = (e) => {
     e.preventDefault();
     contextDispatch({
-      type: 'SAVE_SHIPPING_ADDRESS',
+      type: 'SHIPPING_ADDRESS',
       payload: {
         fullName,
         address,

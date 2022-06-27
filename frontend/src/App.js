@@ -3,10 +3,6 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { useContext } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import HomePage from './pages/HomePage';
-import ItemsPage from './pages/ItemsPage';
-import CartPage from './pages/CartPage';
-import SignInPage from './pages/SignInPage';
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -14,8 +10,13 @@ import Badge from 'react-bootstrap/Badge';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Store } from './Store';
+import HomePage from './pages/HomePage';
+import ItemsPage from './pages/ItemsPage';
+import CartPage from './pages/CartPage';
+import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import CheckoutPage from './pages/CheckoutPage';
+import PayOptionPage from './pages/PayOptionPage';
 
 function App() {
   const { state, dispatch: contextDispatch } = useContext(Store);
@@ -24,6 +25,8 @@ function App() {
   const signOut = () => {
     contextDispatch({ type: 'SIGNOUT' });
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentOption');
   };
 
   return (
@@ -77,9 +80,9 @@ function App() {
               <Route path="/item/:slug" element={<ItemsPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/signin" element={<SignInPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/signup" element={<SignUpPage />} />
-
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/payment" element={<PayOptionPage />} />
               <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>
