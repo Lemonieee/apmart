@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import seedRouter from './routes/seedRoutes.js';
 import itemRouter from './routes/itemRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import orderRouter from './routes/orderRoutes.js';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use('/api/seed', seedRouter);
 // });
 app.use('/api/items', itemRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 //inside userRoutes.js expressAsyncHandler, if there is an error, this will run the error msg and return to the user
 app.use((err, req, res, next) => {

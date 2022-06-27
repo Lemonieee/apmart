@@ -23,7 +23,7 @@ export default function PayOptionPage() {
   const submit = (e) => {
     e.preventDefault();
     contextDispatch({
-      type: 'PAYMENT_METHOD',
+      type: 'PAYMENT_OPTION',
       payload: payOptionName,
     });
     localStorage.setItem('paymentOption', payOptionName);

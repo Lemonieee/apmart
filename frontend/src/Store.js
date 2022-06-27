@@ -43,7 +43,6 @@ function reducer(state, action) {
       //'cartItems' is the key, second is converting cartItems into string and save in 'cartItems'
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
-
     case 'REMOVE_FROM_CART': {
       const cartItems = state.cart.cartItems.filter(
         (item) => item._id !== action.payload._id
@@ -51,6 +50,9 @@ function reducer(state, action) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
+    case 'CART_CLEAR':
+      return { ...state, cart: { ...state.cart, cartItems: [] } };
+
     case 'SIGNIN':
       //update user info based on the data got from backend(action.payload)
       return { ...state, userInfo: action.payload };
@@ -64,6 +66,7 @@ function reducer(state, action) {
           paymentOption: '',
         },
       };
+
     case 'SHIPPING_ADDRESS':
       return {
         ...state,
@@ -72,7 +75,7 @@ function reducer(state, action) {
           shippingAddress: action.payload,
         },
       };
-    case 'PAYMENT_METHOD':
+    case 'PAYMENT_OPTION':
       return {
         ...state,
         cart: { ...state.cart, paymentOption: action.payload },

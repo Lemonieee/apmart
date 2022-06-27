@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
+import Axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
@@ -6,11 +7,32 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
 import { Store } from '../Store';
 import CheckoutSteps from '../components/CheckoutSteps';
+import LoadingBox from '../components/LoadingBox';
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'ORDER_REQUEST':
+      return { ...state, loading: true };
+    case 'ORDER_SUCCESS':
+      return { ...state, loading: false };
+    case 'ORDER_FAIL':
+      return { ...state, loading: false };
+    default:
+      return state;
+  }
+};
 
 export default function PlaceOrderPage() {
   const navigate = useNavigate();
+  const [{ loading }, dispatch] = useReducer(reducer, {
+    //default value
+    loading: false,
+  });
+
   const { state, dispatch: contextDispatch } = useContext(Store);
   const { cart, userInfo } = state;
 
@@ -18,10 +40,40 @@ export default function PlaceOrderPage() {
   cart.itemsPrice = roundPrice(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
   );
-  cart.shippingPrice = cart.itemsPrice > 50 ? roundPrice(0) : roundPrice(5);
-  cart.totalPrice = cart.itemsPrice + cart.shippingPrice;
+  cart.deliveryPrice = cart.itemsPrice > 50 ? roundPrice(0) : roundPrice(5);
+  cart.total = cart.itemsPrice + cart.deliveryPrice;
 
-  const placeOrder = async () => {};
+  const placeOrder = async () => {
+    try {
+      dispatch({ type: 'ORDER_REQUEST' });
+
+      const { data } = await Axios.post(
+        '/api/orders',
+        {
+          orderItems: cart.cartItems,
+          shippingAddress: cart.shippingAddress,
+          paymentOption: cart.paymentOption,
+          itemsPrice: cart.itemsPrice,
+          deliveryPrice: cart.deliveryPrice,
+          total: cart.total,
+        },
+        {
+          //by having this header, this API is authenticated in the server, and can be detected whether it's from hacker or logged in user
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      contextDispatch({ type: 'CLEAR_CART' });
+      dispatch({ type: 'ORDER_SUCCESS' });
+      localStorage.removeItem('cartItems');
+      //redirect to order details page
+      navigate(`/order/${data.order._id}`);
+    } catch (err) {
+      dispatch({ type: 'ORDER_FAIL' });
+      toast.error(getError(err));
+    }
+  };
 
   useEffect(() => {
     if (!cart.paymentOption) {
@@ -102,7 +154,7 @@ export default function PlaceOrderPage() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Delivery</Col>
-                    <Col>RM {cart.shippingPrice.toFixed(2)}</Col>
+                    <Col>RM {cart.deliveryPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -111,7 +163,7 @@ export default function PlaceOrderPage() {
                       <strong> Order Total</strong>
                     </Col>
                     <Col>
-                      <strong>RM {cart.totalPrice.toFixed(2)}</strong>
+                      <strong>RM {cart.total.toFixed(2)}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -124,6 +176,7 @@ export default function PlaceOrderPage() {
                     >
                       Place Order
                     </Button>
+                    {loading && <LoadingBox></LoadingBox>}
                   </div>
                 </ListGroup.Item>
               </ListGroup>
