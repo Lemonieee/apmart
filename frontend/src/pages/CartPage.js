@@ -37,7 +37,7 @@ export default function CartScreen() {
 
   const checkOut = () => {
     //check user authentication, if authenticated, redirect to shipping screen
-    navigate('/signin?redirect=/shipping');
+    navigate('/signin?redirect=/checkout');
   };
 
   return (
