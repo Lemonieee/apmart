@@ -24,6 +24,17 @@ orderRouter.post(
   })
 );
 
+//put it before /:id to prevent it from being handled by that API
+orderRouter.get(
+  '/myorders',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    //req.user._id comes from isAuth middleware
+    const orders = await Order.find({ user: req.user._id });
+    res.send(orders);
+  })
+);
+
 orderRouter.get(
   '/:id',
   isAuth,
