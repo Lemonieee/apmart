@@ -25,6 +25,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+//api to return client ID to frontend
+app.get('/api/keys/paypal', (req, res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID || 'sandbox');
+});
+
 app.use('/api/seed', seedRouter);
 
 //get two params (url going to serve, function that respond to this API)

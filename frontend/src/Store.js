@@ -50,7 +50,7 @@ function reducer(state, action) {
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
-    case 'CART_CLEAR':
+    case 'CLEAR_CART':
       return { ...state, cart: { ...state.cart, cartItems: [] } };
 
     case 'SIGNIN':
