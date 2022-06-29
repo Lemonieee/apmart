@@ -1,4 +1,5 @@
 import express from 'express';
+import expressAsyncHandler from 'express-async-handler';
 import Item from '../models/itemModel.js';
 
 //itemRoutes for all item related API
@@ -10,6 +11,16 @@ itemRouter.get('/', async (req, res) => {
   const items = await Item.find();
   res.send(items);
 });
+
+itemRouter.get(
+  '/category',
+  expressAsyncHandler(async (req, res) => {
+    //use distinct to return a unique category
+    const category = await Item.find().distinct('category');
+    //send back to frontend
+    res.send(category);
+  })
+);
 
 //findOne and findById from Mongoose
 itemRouter.get('/slug/:slug', async (req, res) => {

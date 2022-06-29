@@ -16,10 +16,11 @@ main {
   flex: 1;
 }
 
-/* .btn-primary {
-  background-color: #f0c040;
+.btn-primary,
+.btn-outline-primary {
+  background-color: #73a1ff;
   color: #000000;
-} */
+}
 
 .items {
   display: flex;
@@ -63,4 +64,35 @@ main {
 .checkout-steps > div.active {
   border-bottom: 0.2rem solid #73a1ff;
   color: #73a1ff;
+}
+
+.navLinkText {
+  color: #ffffff;
+}
+
+.navLinkText :hover {
+  background-color: #73a1ff;
+}
+
+/* sidebar */
+.navbar-brand {
+  font-weight: bold;
+}
+.side-navbar {
+  width: 240px;
+  height: 100%;
+  position: absolute;
+  left: -300px;
+  background-color: #060b26;
+  transition: 0.5s;
+}
+
+.site-container {
+  transition: 0.4s;
+}
+.active-cont {
+  margin-left: 240px;
+}
+.active-nav {
+  left: 0;
 }
