@@ -96,3 +96,11 @@ main {
 .active-nav {
   left: 0;
 }
+
+.text-bold {
+  font-weight: bold;
+}
+
+#basic-nav-dropdown {
+  padding-top: 15px;
+}

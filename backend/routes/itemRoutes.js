@@ -12,8 +12,92 @@ itemRouter.get('/', async (req, res) => {
   res.send(items);
 });
 
+const PAGE_SIZE = 3;
 itemRouter.get(
-  '/category',
+  '/search',
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const page = query.page || 1;
+    const category = query.category || '';
+    const price = query.price || '';
+    const rating = query.rating || '';
+    const order = query.order || '';
+    const searchQuery = query.query || '';
+
+    const queryFilter =
+      searchQuery && searchQuery !== 'all'
+        ? //object passed to the fine() method on the Item model in Mongo
+          {
+            name: {
+              $regex: searchQuery,
+              //case insensitive
+              $options: 'i',
+            },
+          }
+        : {};
+    const categoryFilter = category && category !== 'all' ? { category } : {};
+    const ratingFilter =
+      rating && rating !== 'all'
+        ? {
+            rating: {
+              $gte: Number(rating),
+            },
+          }
+        : {};
+    const priceFilter =
+      price && price !== 'all'
+        ? {
+            // 1-50
+            price: {
+              $gte: Number(price.split('-')[0]),
+              $lte: Number(price.split('-')[1]),
+            },
+          }
+        : {};
+    const sortOrder =
+      order === 'featured'
+        ? { featured: -1 }
+        : order === 'lowest'
+        ? //ascending by 1
+          { price: 1 }
+        : order === 'highest'
+        ? //descending by -1
+          { price: -1 }
+        : order === 'toprated'
+        ? { rating: -1 }
+        : order === 'newest'
+        ? { createdAt: -1 }
+        : { _id: -1 };
+
+    const items = await Item.find({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    })
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countItems = await Item.countDocuments({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    });
+    res.send({
+      items,
+      countItems,
+      page,
+      //.ceil is get the higher figure (eg: 0.95 = 1)
+      pages: Math.ceil(countItems / pageSize),
+    });
+  })
+);
+
+itemRouter.get(
+  '/categories',
   expressAsyncHandler(async (req, res) => {
     //use distinct to return a unique category
     const category = await Item.find().distinct('category');

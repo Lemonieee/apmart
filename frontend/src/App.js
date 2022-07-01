@@ -22,6 +22,8 @@ import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
 import UserProfilePage from './pages/UserProfilePage';
+import SearchResultPage from './pages/SearchResultPage';
+
 import { getError } from './utils';
 import axios from 'axios';
 import SearchBox from './components/SearchBox';
@@ -44,7 +46,7 @@ function App() {
   useEffect(() => {
     const fetchItemCategory = async () => {
       try {
-        const { data } = await axios.get(`/api/items/category`);
+        const { data } = await axios.get(`/api/items/categories`);
         setCategory(data);
       } catch (err) {
         toast.error(getError(err));
@@ -78,9 +80,14 @@ function App() {
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <SearchBox />
-                <Nav className="w-100  justify-content-end">
+                <Nav className="w-100 justify-content-end">
                   <Link to="/cart" className="nav-link">
-                    Cart
+                    <Button variant="blue">
+                      <i
+                        className="fas fa-shopping-cart"
+                        style={{ color: '#FFFFFF' }}
+                      ></i>
+                    </Button>
                     {cart.cartItems.length > 0 && (
                       <Badge pill bg="danger">
                         {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
@@ -150,6 +157,7 @@ function App() {
               <Route path="/signin" element={<SignInPage />} />
               <Route path="/signup" element={<SignUpPage />} />
               <Route path="/profile" element={<UserProfilePage />} />
+              <Route path="/search" element={<SearchResultPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/placeorder" element={<PlaceOrderPage />} />
               <Route path="/order/:id" element={<OrderDetailsPage />} />
