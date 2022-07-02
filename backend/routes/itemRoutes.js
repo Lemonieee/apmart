@@ -35,6 +35,30 @@ itemRouter.post(
   })
 );
 
+itemRouter.put(
+  '/:id',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const itemId = req.params.id;
+    const item = await Item.findById(itemId);
+    if (item) {
+      item.name = req.body.name;
+      item.slug = req.body.slug;
+      item.price = req.body.price;
+      item.image = req.body.image;
+      item.category = req.body.category;
+      item.brand = req.body.brand;
+      item.stock = req.body.stock;
+      item.description = req.body.description;
+      await item.save();
+      res.send({ message: 'Item Updated' });
+    } else {
+      res.status(404).send({ message: 'Item Not Found' });
+    }
+  })
+);
+
 const PAGE_SIZE = 3;
 
 itemRouter.get(
