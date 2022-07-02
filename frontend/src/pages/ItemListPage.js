@@ -1,10 +1,14 @@
-import axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import { toast } from 'react-toastify';
+import { Store } from '../Store';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { Store } from '../Store';
+import { getError } from '../utils';
 
 //manage state of fetching products from backend
 const reducer = (state, action) => {
@@ -21,19 +25,29 @@ const reducer = (state, action) => {
       };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-
+    case 'ADD_REQUEST':
+      return { ...state, loadingCreate: true };
+    case 'ADD_SUCCESS':
+      return {
+        ...state,
+        loadingCreate: false,
+      };
+    case 'ADD_FAIL':
+      return { ...state, loadingCreate: false };
     default:
       return state;
   }
 };
 
 export default function ItemListPage() {
-  const [{ loading, error, items, pages }, dispatch] = useReducer(reducer, {
-    loading: true,
-    error: '',
-  });
+  const [{ loading, error, items, pages, loadingCreate }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: '',
+    });
 
-  const { search, pathname } = useLocation();
+  const navigate = useNavigate();
+  const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const page = sp.get('page') || 1;
 
@@ -54,9 +68,45 @@ export default function ItemListPage() {
     fetchData();
   }, [page, userInfo]);
 
+  const addNewItem = async () => {
+    if (window.confirm('Are you sure to create?')) {
+      try {
+        dispatch({ type: 'ADD_REQUEST' });
+        const { data } = await axios.post(
+          '/api/items',
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        toast.success('Item created successfully');
+        dispatch({ type: 'ADD_SUCCESS' });
+        navigate(`/admin/item/${data.item._id}`);
+      } catch (err) {
+        toast.error(getError(error));
+        dispatch({
+          type: 'ADD_FAIL',
+        });
+      }
+    }
+  };
+
   return (
     <div>
-      <h1>Items</h1>
+      <Row>
+        <Col>
+          <h1>Items</h1>
+        </Col>
+        <Col className="col text-end">
+          <div>
+            <Button type="button" onClick={addNewItem}>
+              Add New Item
+            </Button>
+          </div>
+        </Col>
+      </Row>
+
+      {loadingCreate && <LoadingBox></LoadingBox>}
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (

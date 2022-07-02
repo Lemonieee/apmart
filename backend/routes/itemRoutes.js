@@ -13,6 +13,28 @@ itemRouter.get('/', async (req, res) => {
   res.send(items);
 });
 
+itemRouter.post(
+  '/',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const newItem = new Item({
+      name: 'sample name ' + Date.now(),
+      slug: 'sample-name-' + Date.now(),
+      image: '/images/p1.jpg',
+      price: 0,
+      category: 'sample category',
+      brand: 'sample brand',
+      stock: 0,
+      rating: 0,
+      reviewNum: 0,
+      description: 'sample description',
+    });
+    const item = await newItem.save();
+    res.send({ message: 'Item Created', item });
+  })
+);
+
 const PAGE_SIZE = 3;
 
 itemRouter.get(
