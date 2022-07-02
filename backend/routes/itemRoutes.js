@@ -59,6 +59,21 @@ itemRouter.put(
   })
 );
 
+itemRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const item = await Item.findById(req.params.id);
+    if (item) {
+      await item.remove();
+      res.send({ message: 'Item Deleted' });
+    } else {
+      res.status(404).send({ message: 'Item Not Found' });
+    }
+  })
+);
+
 const PAGE_SIZE = 3;
 
 itemRouter.get(

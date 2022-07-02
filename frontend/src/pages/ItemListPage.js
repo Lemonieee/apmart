@@ -35,17 +35,40 @@ const reducer = (state, action) => {
       };
     case 'ADD_FAIL':
       return { ...state, loadingCreate: false };
+    case 'DELETE_REQUEST':
+      return { ...state, loadingDelete: true, successDelete: false };
+    case 'DELETE_SUCCESS':
+      return {
+        ...state,
+        loadingDelete: false,
+        successDelete: true,
+      };
+    case 'DELETE_FAIL':
+      return { ...state, loadingDelete: false, successDelete: false };
+
+    case 'DELETE_RESET':
+      return { ...state, loadingDelete: false, successDelete: false };
     default:
       return state;
   }
 };
 
 export default function ItemListPage() {
-  const [{ loading, error, items, pages, loadingCreate }, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      error: '',
-    });
+  const [
+    {
+      loading,
+      error,
+      items,
+      pages,
+      loadingCreate,
+      loadingDelete,
+      successDelete,
+    },
+    dispatch,
+  ] = useReducer(reducer, {
+    loading: true,
+    error: '',
+  });
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -66,8 +89,13 @@ export default function ItemListPage() {
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {}
     };
-    fetchData();
-  }, [page, userInfo]);
+
+    if (successDelete) {
+      dispatch({ type: 'DELETE_RESET' });
+    } else {
+      fetchData();
+    }
+  }, [page, userInfo, successDelete]);
 
   const addNewItem = async () => {
     if (window.confirm('Are you sure to create?')) {
@@ -92,6 +120,23 @@ export default function ItemListPage() {
     }
   };
 
+  const deleteItem = async (item) => {
+    if (window.confirm('Are you sure to delete?')) {
+      try {
+        await axios.delete(`/api/items/${item._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        toast.success('Item deleted successfully');
+        dispatch({ type: 'DELETE_SUCCESS' });
+      } catch (err) {
+        toast.error(getError(error));
+        dispatch({
+          type: 'DELETE_FAIL',
+        });
+      }
+    }
+  };
+
   return (
     <div>
       <Row>
@@ -111,6 +156,8 @@ export default function ItemListPage() {
       </Row>
 
       {loadingCreate && <LoadingBox></LoadingBox>}
+      {loadingDelete && <LoadingBox></LoadingBox>}
+
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
@@ -143,6 +190,14 @@ export default function ItemListPage() {
                       onClick={() => navigate(`/admin/item/${item._id}`)}
                     >
                       Edit
+                    </Button>
+                    &nbsp;
+                    <Button
+                      type="button"
+                      variant="dark"
+                      onClick={() => deleteItem(item)}
+                    >
+                      Remove
                     </Button>
                   </td>
                 </tr>
