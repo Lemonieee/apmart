@@ -8,7 +8,6 @@ import MessageBox from '../components/MessageBox';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import { Helmet } from 'react-helmet-async';
 
 //fetch data from backend
 const reducer = (state, action) => {

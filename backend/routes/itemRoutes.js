@@ -1,6 +1,7 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Item from '../models/itemModel.js';
+import { isAuth, isAdmin } from '../utils.js';
 
 //itemRoutes for all item related API
 
@@ -13,6 +14,29 @@ itemRouter.get('/', async (req, res) => {
 });
 
 const PAGE_SIZE = 3;
+
+itemRouter.get(
+  '/admin',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const items = await Item.find()
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countItems = await Item.countDocuments();
+    res.send({
+      items,
+      countItems,
+      page,
+      pages: Math.ceil(countItems / pageSize),
+    });
+  })
+);
+
 itemRouter.get(
   '/search',
   expressAsyncHandler(async (req, res) => {
