@@ -1,7 +1,9 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Order from '../models/orderModel.js';
-import { isAuth } from '../utils.js';
+import User from '../models/userModel.js';
+import Item from '../models/itemModel.js';
+import { isAuth, isAdmin } from '../utils.js';
 
 const orderRouter = express.Router();
 orderRouter.post(
@@ -21,6 +23,54 @@ orderRouter.post(
     const order = await newOrder.save();
     res.status(201).send({ message: 'Order Created', order });
     //order is sent to frontend, and PlaceOrderPage get the order._id
+  })
+);
+
+orderRouter.get(
+  '/summary',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    //aggregation is an operation that process multiple docs and return computed results
+    const orders = await Order.aggregate([
+      {
+        $group: {
+          //no id means all data
+          _id: null,
+          //$sum : 1 means that it counts number of elements or number of docs
+          //in the order collection and set it to numOfOrders
+          numOfOrders: { $sum: 1 },
+          sales: { $sum: '$total' },
+        },
+      },
+    ]);
+    const users = await User.aggregate([
+      {
+        $group: {
+          _id: null,
+          numOfUsers: { $sum: 1 },
+        },
+      },
+    ]);
+    const dailyOrders = await Order.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          orders: { $sum: 1 },
+          sales: { $sum: '$total' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+    const itemCategories = await Item.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.send({ users, orders, dailyOrders, itemCategories });
   })
 );
 
