@@ -39,7 +39,7 @@ export default function UserProfilePage() {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        '/api/users/profile',
+        '/api/users/userprofile',
         {
           name,
           email,

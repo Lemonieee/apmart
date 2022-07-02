@@ -27,6 +27,9 @@ import SearchResultPage from './pages/SearchResultPage';
 import { getError } from './utils';
 import axios from 'axios';
 import SearchBox from './components/SearchBox';
+import ProtectedRoute from './components/ProtectedRoute';
+import DashboardPage from './pages/DashboardPage';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
   const { state, dispatch: contextDispatch } = useContext(Store);
@@ -96,7 +99,7 @@ function App() {
                   </Link>
                   {userInfo ? (
                     <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
-                      <LinkContainer to="/profile">
+                      <LinkContainer to="/userprofile">
                         <NavDropdown.Item>User Profile</NavDropdown.Item>
                       </LinkContainer>
                       <LinkContainer to="/orderhistory">
@@ -115,6 +118,22 @@ function App() {
                     <Link className="nav-link" to="/signin">
                       Sign In
                     </Link>
+                  )}
+                  {userInfo && userInfo.isAdmin && (
+                    <NavDropdown title="Admin" id="admin-nav-dropdown">
+                      <LinkContainer to="/admin/dashboard">
+                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/productlist">
+                        <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/orderlist">
+                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/userlist">
+                        <NavDropdown.Item>Users</NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
                   )}
                 </Nav>
               </Navbar.Collapse>
@@ -156,13 +175,43 @@ function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/signin" element={<SignInPage />} />
               <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/profile" element={<UserProfilePage />} />
+              <Route
+                path="/userprofile"
+                element={
+                  <ProtectedRoute>
+                    <UserProfilePage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/search" element={<SearchResultPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/placeorder" element={<PlaceOrderPage />} />
+              <Route
+                path="/placeorder"
+                element={
+                  <ProtectedRoute>
+                    <PlaceOrderPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/order/:id" element={<OrderDetailsPage />} />
-              <Route path="/orderhistory" element={<OrderHistoryPage />} />
+              <Route
+                path="/orderhistory"
+                element={
+                  <ProtectedRoute>
+                    <OrderHistoryPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/payment" element={<PayOptionPage />} />
+              {/*Admin Route*/}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <AdminRoute>
+                    <DashboardPage />
+                  </AdminRoute>
+                }
+              ></Route>
               <Route path="/" element={<HomePage />} />
             </Routes>
           </Container>
