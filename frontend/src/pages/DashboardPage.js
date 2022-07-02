@@ -8,6 +8,7 @@ import MessageBox from '../components/MessageBox';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import { Helmet } from 'react-helmet-async';
 
 //fetch data from backend
 const reducer = (state, action) => {
@@ -55,6 +56,9 @@ export default function DashboardPage() {
 
   return (
     <div>
+      <Helmet>
+        <title>Dashboard</title>
+      </Helmet>
       <h1>Dashboard</h1>
       {loading ? (
         <LoadingBox />

@@ -31,6 +31,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardPage from './pages/DashboardPage';
 import AdminRoute from './components/AdminRoute';
 import ItemListPage from './pages/ItemListPage';
+import EditItemPage from './pages/EditItemPage';
 
 function App() {
   const { state, dispatch: contextDispatch } = useContext(Store);
@@ -218,6 +219,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <ItemListPage />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/item/:id"
+                element={
+                  <AdminRoute>
+                    <EditItemPage />
                   </AdminRoute>
                 }
               ></Route>

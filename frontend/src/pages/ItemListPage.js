@@ -9,6 +9,7 @@ import { Store } from '../Store';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
+import { Helmet } from 'react-helmet-async';
 
 //manage state of fetching products from backend
 const reducer = (state, action) => {
@@ -95,6 +96,9 @@ export default function ItemListPage() {
     <div>
       <Row>
         <Col>
+          <Helmet>
+            <title>Items List</title>
+          </Helmet>
           <h1>Items</h1>
         </Col>
         <Col className="col text-end">
@@ -121,16 +125,26 @@ export default function ItemListPage() {
                 <th>PRICE</th>
                 <th>CATEGORY</th>
                 <th>BRAND</th>
+                <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {items.map((items) => (
-                <tr key={items._id}>
-                  <td>{items._id}</td>
-                  <td>{items.name}</td>
-                  <td>{items.price}</td>
-                  <td>{items.category}</td>
-                  <td>{items.brand}</td>
+              {items.map((item) => (
+                <tr key={item._id}>
+                  <td>{item._id}</td>
+                  <td>{item.name}</td>
+                  <td>{item.price}</td>
+                  <td>{item.category}</td>
+                  <td>{item.brand}</td>
+                  <td>
+                    <Button
+                      type="button"
+                      variant="dark"
+                      onClick={() => navigate(`/admin/item/${item._id}`)}
+                    >
+                      Edit
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
