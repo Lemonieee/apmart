@@ -69,7 +69,7 @@ export default function OrderLisPage() {
               <th>USER</th>
               <th>DATE</th>
               <th>TOTAL</th>
-              <th>PAID</th>
+              <th>PAYMENT DATE</th>
               <th>DELIVERED</th>
               <th>ACTIONS</th>
             </tr>
@@ -82,15 +82,12 @@ export default function OrderLisPage() {
                 <td>{order.createdAt.substring(0, 10)}</td>
                 <td>{order.total.toFixed(2)}</td>
                 <td>
-                  {order.isPaid ? order.paymentDate.substring(0, 10) : 'No'}
-                </td>
-                <td>
-                  {order.isPaid ? order.paymentDate.substring(0, 10) : 'No'}
+                  {order.isPaid ? order.paymentDate.substring(0, 10) : 'UNPAID'}
                 </td>
                 <td>
                   {order.isDelivered
                     ? order.deliveredDate.substring(0, 10)
-                    : 'No'}
+                    : 'NOT DELIVERED'}
                 </td>
                 <td>
                   <Button
