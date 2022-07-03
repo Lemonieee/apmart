@@ -48,6 +48,25 @@ userRouter.put(
   })
 );
 
+userRouter.delete(
+  '/:id',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      if (user.email === 'admin@example.com') {
+        res.status(400).send({ message: 'Not Allowed to Delete Admin!' });
+        return;
+      }
+      await user.remove();
+      res.send({ message: 'User Deleted' });
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+
 //define POST requests for sign in API
 userRouter.post(
   '/signin',
