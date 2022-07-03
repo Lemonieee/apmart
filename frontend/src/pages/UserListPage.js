@@ -68,7 +68,7 @@ export default function UserListPage() {
               <th>NAME</th>
               <th>EMAIL</th>
               <th>IS ADMIN</th>
-              <th>ACTIONS</th>
+              <th style={{ textAlign: 'center' }}>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
