@@ -32,6 +32,7 @@ import DashboardPage from './pages/DashboardPage';
 import AdminRoute from './components/AdminRoute';
 import ItemListPage from './pages/ItemListPage';
 import EditItemPage from './pages/EditItemPage';
+import OrderLisPage from './pages/OrderListPage';
 
 function App() {
   const { state, dispatch: contextDispatch } = useContext(Store);
@@ -99,7 +100,7 @@ function App() {
                       </Badge>
                     )}
                   </Link>
-                  {userInfo ? (
+                  {userInfo && !userInfo.isAdmin ? (
                     <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
                       <LinkContainer to="/userprofile">
                         <NavDropdown.Item>User Profile</NavDropdown.Item>
@@ -117,9 +118,12 @@ function App() {
                       </Link>
                     </NavDropdown>
                   ) : (
-                    <Link className="nav-link" to="/signin">
-                      Sign In
-                    </Link>
+                    userInfo &&
+                    !userInfo.isAdmin && (
+                      <Link className="nav-link" to="/signin">
+                        Sign In
+                      </Link>
+                    )
                   )}
                   {userInfo && userInfo.isAdmin && (
                     <NavDropdown title="Admin" id="admin-nav-dropdown">
@@ -135,6 +139,17 @@ function App() {
                       <LinkContainer to="/admin/users">
                         <NavDropdown.Item>Users</NavDropdown.Item>
                       </LinkContainer>
+                      <NavDropdown.Divider />
+                      <LinkContainer to="/userprofile">
+                        <NavDropdown.Item>User Profile</NavDropdown.Item>
+                      </LinkContainer>
+                      <Link
+                        className="dropdown-item"
+                        to="#signout"
+                        onClick={signOut}
+                      >
+                        Sign Out
+                      </Link>
                     </NavDropdown>
                   )}
                 </Nav>
@@ -211,6 +226,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <DashboardPage />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/orders"
+                element={
+                  <AdminRoute>
+                    <OrderLisPage />
                   </AdminRoute>
                 }
               ></Route>

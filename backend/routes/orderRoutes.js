@@ -6,6 +6,20 @@ import Item from '../models/itemModel.js';
 import { isAuth, isAdmin } from '../utils.js';
 
 const orderRouter = express.Router();
+
+//final address gonna be /api/orders
+//return all orders for admin
+orderRouter.get(
+  '/',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    //get user object and only use the 'name' field
+    const orders = await Order.find().populate('user', 'name');
+    res.send(orders);
+  })
+);
+
 orderRouter.post(
   '/',
   isAuth,
