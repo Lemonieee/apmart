@@ -38,6 +38,7 @@ export default function UserProfilePage() {
     //prevent refreshing page
     e.preventDefault();
     try {
+      console.log('here');
       const { data } = await axios.put(
         '/api/users/userprofile',
         {
@@ -49,15 +50,16 @@ export default function UserProfilePage() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
+
       dispatch({
         type: 'UPDATE_SUCCESS',
       });
-      contextDispatch({ type: 'USER_SIGNIN', payload: data });
+      contextDispatch({ type: 'SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
       toast.success('User updated successfully');
     } catch (err) {
       dispatch({
-        type: 'FETCH_FAIL',
+        type: 'UPDATE_FAIL',
       });
       toast.error(getError(err));
     }
