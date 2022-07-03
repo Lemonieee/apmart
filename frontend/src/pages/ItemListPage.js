@@ -171,8 +171,8 @@ export default function ItemListPage() {
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>CATEGORY</th>
-                <th>BRAND</th>
-                <th>ACTIONS</th>
+                <th>STOCK</th>
+                <th style={{ textAlign: 'center' }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -182,8 +182,12 @@ export default function ItemListPage() {
                   <td>{item.name}</td>
                   <td>{item.price}</td>
                   <td>{item.category}</td>
-                  <td>{item.brand}</td>
-                  <td>
+                  {item.stock === 0 ? (
+                    <td style={{ backgroundColor: 'red' }}>{item.stock}</td>
+                  ) : (
+                    <td>{item.stock}</td>
+                  )}
+                  <td style={{ textAlign: 'center' }}>
                     <Button
                       type="button"
                       variant="dark"
