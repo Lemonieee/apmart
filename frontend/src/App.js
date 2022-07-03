@@ -34,6 +34,7 @@ import ItemListPage from './pages/ItemListPage';
 import EditItemPage from './pages/EditItemPage';
 import OrderLisPage from './pages/OrderListPage';
 import UserListPage from './pages/UserListPage';
+import EditUserPage from './pages/EditUserPage';
 
 function App() {
   const { state, dispatch: contextDispatch } = useContext(Store);
@@ -243,6 +244,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <UserListPage />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/user/:id"
+                element={
+                  <AdminRoute>
+                    <EditUserPage />
                   </AdminRoute>
                 }
               ></Route>
