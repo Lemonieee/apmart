@@ -25,6 +25,16 @@ const reducer = (state, action) => {
       return { ...state, loadingUpdate: false };
     case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
+    case 'UPLOAD_IMG_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_IMG_SUCCESS':
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: '',
+      };
+    case 'UPLOAD_IMG_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     default:
       return state;
   }
@@ -42,11 +52,12 @@ export default function EditItemPage() {
 
   //extract the state, from the state extract loading and error
   //extract disptach to change the action
-  const [{ loading, error, loadingUpdate }, dispatch] = useReducer(reducer, {
-    //initial value
-    loading: true,
-    error: '',
-  });
+  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
+    useReducer(reducer, {
+      //initial value
+      loading: true,
+      error: '',
+    });
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
@@ -115,6 +126,29 @@ export default function EditItemPage() {
     }
   };
 
+  const uploadFile = async (e) => {
+    //get file from the event
+    const imgfile = e.target.files[0];
+    const formData = new FormData();
+    formData.append('file', imgfile);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+
+      toast.success('Image uploaded successfully');
+      setImage(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
+
   return (
     <div>
       <h2 style={{ display: 'flex', justifyContent: 'center' }}>
@@ -162,6 +196,11 @@ export default function EditItemPage() {
                 onChange={(e) => setImage(e.target.value)}
                 required
               />
+              <Form.Group className="mb-3" controlId="imageFile">
+                <Form.Label>Upload File</Form.Label>
+                <Form.Control type="file" onChange={uploadFile} />
+                {loadingUpload && <LoadingBox></LoadingBox>}
+              </Form.Group>
             </Form.Group>
             <Form.Group className="mb-3" controlId="category">
               <Form.Label>Category</Form.Label>

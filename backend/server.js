@@ -6,6 +6,7 @@ import seedRouter from './routes/seedRoutes.js';
 import itemRouter from './routes/itemRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
+import uploadRouter from './routes/uploadRoutes.js';
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.get('/api/keys/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sandbox');
 });
 
+app.use('/api/upload', uploadRouter);
 app.use('/api/seed', seedRouter);
 
 //get two params (url going to serve, function that respond to this API)
