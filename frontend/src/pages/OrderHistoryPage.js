@@ -73,7 +73,7 @@ export default function OrderHistoryPage() {
               <th>DATE</th>
               <th>TOTAL</th>
               <th>PAID</th>
-              <th>DELIVERED</th>
+              <th>PREPARED</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
@@ -87,8 +87,8 @@ export default function OrderHistoryPage() {
                   {order.isPaid ? order.paymentDate.substring(0, 10) : 'No'}
                 </td>
                 <td>
-                  {order.isDelivered
-                    ? order.deliveredDate.substring(0, 10)
+                  {order.isPrepared
+                    ? order.preparedDate.substring(0, 10)
                     : 'No'}
                 </td>
                 <td>

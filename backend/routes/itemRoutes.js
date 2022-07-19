@@ -26,7 +26,6 @@ itemRouter.post(
       category: 'sample category',
       brand: 'sample brand',
       stock: 0,
-      rating: 0,
       reviewNum: 0,
       description: 'sample description',
     });
@@ -106,7 +105,6 @@ itemRouter.get(
     const page = query.page || 1;
     const category = query.category || '';
     const price = query.price || '';
-    const rating = query.rating || '';
     const order = query.order || '';
     const searchQuery = query.query || '';
 
@@ -122,14 +120,6 @@ itemRouter.get(
           }
         : {};
     const categoryFilter = category && category !== 'all' ? { category } : {};
-    const ratingFilter =
-      rating && rating !== 'all'
-        ? {
-            rating: {
-              $gte: Number(rating),
-            },
-          }
-        : {};
     const priceFilter =
       price && price !== 'all'
         ? {
@@ -149,8 +139,6 @@ itemRouter.get(
         : order === 'highest'
         ? //descending by -1
           { price: -1 }
-        : order === 'toprated'
-        ? { rating: -1 }
         : order === 'newest'
         ? { createdAt: -1 }
         : { _id: -1 };
@@ -159,7 +147,6 @@ itemRouter.get(
       ...queryFilter,
       ...categoryFilter,
       ...priceFilter,
-      ...ratingFilter,
     })
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
@@ -169,7 +156,6 @@ itemRouter.get(
       ...queryFilter,
       ...categoryFilter,
       ...priceFilter,
-      ...ratingFilter,
     });
     res.send({
       items,

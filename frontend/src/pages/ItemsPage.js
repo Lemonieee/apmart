@@ -11,7 +11,6 @@ import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
-import Rating from '../components/Rating';
 import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
@@ -96,17 +95,8 @@ function ItemsPage() {
               </Helmet>
               <h1>{item.name}</h1>
             </ListGroup.Item>
-            <ListGroup.Item>
-              <Rating
-                rating={item.rating}
-                numReviews={item.numReviews}
-              ></Rating>
-            </ListGroup.Item>
-            <ListGroup.Item>Price: RM {item.price}</ListGroup.Item>
-            <ListGroup.Item>
-              Description:
-              <p>{item.description}</p>
-            </ListGroup.Item>
+            <ListGroup.Item>Quantity: {item.stock}</ListGroup.Item>
+            <ListGroup.Item>Description: {item.description}</ListGroup.Item>
           </ListGroup>
         </Col>
         <Col md={3}>
@@ -116,7 +106,7 @@ function ItemsPage() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Price:</Col>
-                    <Col>${item.price}</Col>
+                    <Col>RM {item.price}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>

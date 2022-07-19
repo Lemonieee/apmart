@@ -10,16 +10,16 @@ export default function PayOptionPage() {
   const navigate = useNavigate();
   const { state, dispatch: contextDispatch } = useContext(Store);
   const {
-    cart: { shippingAddress, paymentOption },
+    cart: { buyerDetails, paymentOption },
   } = state;
 
   const [payOptionName, setpaymentOption] = useState(paymentOption || 'PayPal');
 
   useEffect(() => {
-    if (!shippingAddress.address) {
+    if (!buyerDetails.fullName || !buyerDetails.buyerId) {
       navigate('/checkout');
     }
-  }, [shippingAddress, navigate]);
+  }, [buyerDetails, navigate]);
   const submit = (e) => {
     e.preventDefault();
     contextDispatch({
@@ -45,16 +45,6 @@ export default function PayOptionPage() {
               label="PayPal"
               value="PayPal"
               checked={payOptionName === 'PayPal'}
-              onChange={(e) => setpaymentOption(e.target.value)}
-            />
-          </div>
-          <div className="mb-3">
-            <Form.Check
-              type="radio"
-              id="Stripe"
-              label="Stripe"
-              value="Stripe"
-              checked={payOptionName === 'Stripe'}
               onChange={(e) => setpaymentOption(e.target.value)}
             />
           </div>

@@ -1,14 +1,13 @@
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
-import Rating from './Rating';
 import axios from 'axios';
 import { useContext } from 'react';
 import { Store } from '../Store';
 
 function Items(props) {
   const { item } = props;
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { state, dispatch: contextDispatch } = useContext(Store);
   const {
     cart: { cartItems },
   } = state;
@@ -21,7 +20,7 @@ function Items(props) {
       window.alert('Sorry. Item is out of stock');
       return;
     }
-    ctxDispatch({
+    contextDispatch({
       type: 'ADD_TO_CART',
       payload: { ...item, quantity },
     });
@@ -30,13 +29,18 @@ function Items(props) {
   return (
     <Card>
       <Link to={`/item/${item.slug}`}>
-        <img src={item.image} className="card-img-top" alt={item.name} />
+        <img
+          src={item.image}
+          width="280"
+          height="300"
+          className="card-img-top"
+          alt={item.name}
+        />
       </Link>
       <Card.Body>
         <Link to={`/item/${item.slug}`}>
           <Card.Title>{item.name}</Card.Title>
         </Link>
-        <Rating rating={item.rating} reviewNum={item.reviewNum} />
         <Card.Text>RM {item.price}</Card.Text>
         {item.stock === 0 ? (
           <Button variant="light">Out of Stock</Button>

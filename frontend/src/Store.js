@@ -8,8 +8,8 @@ const initialState = {
     : null,
 
   cart: {
-    shippingAddress: localStorage.getItem('shippingAddress')
-      ? JSON.parse(localStorage.getItem('shippingAddress'))
+    buyerDetails: localStorage.getItem('buyerDetails')
+      ? JSON.parse(localStorage.getItem('buyerDetails'))
       : {},
     paymentOption: localStorage.getItem('paymentOption')
       ? localStorage.getItem('paymentOption')
@@ -24,7 +24,6 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case 'ADD_TO_CART':
-      // add to cart
       // save the item we wanna add as newItem
       const newItem = action.payload;
       // get exist item based on the criteria used in itempage
@@ -62,17 +61,17 @@ function reducer(state, action) {
         userInfo: null,
         cart: {
           cartItems: [],
-          shippingAddress: {},
+          buyerDetails: {},
           paymentOption: '',
         },
       };
 
-    case 'SHIPPING_ADDRESS':
+    case 'BUYER_DETAILS':
       return {
         ...state,
         cart: {
           ...state.cart,
-          shippingAddress: action.payload,
+          buyerDetails: action.payload,
         },
       };
     case 'PAYMENT_OPTION':

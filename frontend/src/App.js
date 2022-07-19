@@ -43,8 +43,9 @@ function App() {
   const signOut = () => {
     contextDispatch({ type: 'SIGNOUT' });
     localStorage.removeItem('userInfo');
-    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('buyerDetails');
     localStorage.removeItem('paymentOption');
+    localStorage.removeItem('cartItems');
     window.location.href = '/signin';
   };
 
@@ -120,10 +121,9 @@ function App() {
                       </Link>
                     </NavDropdown>
                   ) : (
-                    userInfo &&
-                    !userInfo.isAdmin && (
+                    !userInfo && (
                       <Link className="nav-link" to="/signin">
-                        Sign In
+                        <div style={{ paddingTop: '7px' }}>Sign In</div>
                       </Link>
                     )
                   )}
@@ -144,6 +144,9 @@ function App() {
                       <NavDropdown.Divider />
                       <LinkContainer to="/userprofile">
                         <NavDropdown.Item>User Profile</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/orderhistory">
+                        <NavDropdown.Item>Order History</NavDropdown.Item>
                       </LinkContainer>
                       <Link
                         className="dropdown-item"

@@ -98,25 +98,23 @@ export default function ItemListPage() {
   }, [page, userInfo, successDelete]);
 
   const addNewItem = async () => {
-    if (window.confirm('Are you sure to create?')) {
-      try {
-        dispatch({ type: 'ADD_REQUEST' });
-        const { data } = await axios.post(
-          '/api/items',
-          {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        toast.success('Item created successfully');
-        dispatch({ type: 'ADD_SUCCESS' });
-        navigate(`/admin/item/${data.item._id}`);
-      } catch (err) {
-        toast.error(getError(error));
-        dispatch({
-          type: 'ADD_FAIL',
-        });
-      }
+    try {
+      dispatch({ type: 'ADD_REQUEST' });
+      const { data } = await axios.post(
+        '/api/items',
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      toast.success('Item created successfully');
+      dispatch({ type: 'ADD_SUCCESS' });
+      navigate(`/admin/item/${data.item._id}`);
+    } catch (err) {
+      toast.error(getError(error));
+      dispatch({
+        type: 'ADD_FAIL',
+      });
     }
   };
 
@@ -183,7 +181,9 @@ export default function ItemListPage() {
                   <td>{item.price}</td>
                   <td>{item.category}</td>
                   {item.stock === 0 ? (
-                    <td style={{ backgroundColor: 'red' }}>{item.stock}</td>
+                    <td style={{ backgroundColor: 'lightsalmon' }}>
+                      {item.stock}
+                    </td>
                   ) : (
                     <td>{item.stock}</td>
                   )}

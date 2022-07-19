@@ -37,8 +37,11 @@ export default function UserProfilePage() {
   const submit = async (e) => {
     //prevent refreshing page
     e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
     try {
-      console.log('here');
       const { data } = await axios.put(
         '/api/users/userprofile',
         {

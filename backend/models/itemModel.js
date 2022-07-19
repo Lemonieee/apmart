@@ -12,8 +12,6 @@ const itemSchema = new mongoose.Schema(
     brand: { type: String, required: true },
     category: { type: String, required: true },
     stock: { type: Number, required: true },
-    rating: { type: Number, required: true },
-    reviewNum: { type: Number, required: true },
   },
   {
     //when a item created, two fields will be added: last update time and create time

@@ -23,17 +23,17 @@ function reducer(state, action) {
       return { ...state, loading: false, order: action.payload, error: '' };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-    case 'DELIVER_REQUEST':
-      return { ...state, loadingDeliver: true };
-    case 'DELIVER_SUCCESS':
-      return { ...state, loadingDeliver: false, successDeliver: true };
-    case 'DELIVER_FAIL':
-      return { ...state, loadingDeliver: false };
-    case 'DELIVER_RESET':
+    case 'PREPARE_REQUEST':
+      return { ...state, loadingPrepare: true };
+    case 'PREPARE_SUCCESS':
+      return { ...state, loadingPrepare: false, successPrepare: true };
+    case 'PREPARE_FAIL':
+      return { ...state, loadingPrepare: false };
+    case 'PREPARE_RESET':
       return {
         ...state,
-        loadingDeliver: false,
-        successDeliver: false,
+        loadingPrepare: false,
+        successPrepare: false,
       };
     case 'PAY_REQUEST':
       return { ...state, loadingPay: true };
@@ -65,8 +65,8 @@ export default function OrderScreen() {
       order,
       successPay,
       loadingPay,
-      loadingDeliver,
-      successDeliver,
+      loadingPrepare,
+      successPrepare,
     },
     dispatch,
   ] = useReducer(reducer, {
@@ -137,15 +137,15 @@ export default function OrderScreen() {
     if (
       !order._id ||
       successPay ||
-      successDeliver ||
+      successPrepare ||
       (order._id && order._id !== orderId)
     ) {
       fetchOrder();
       if (successPay) {
         dispatch({ type: 'PAY_RESET' });
       }
-      if (successDeliver) {
-        dispatch({ type: 'DELIVER_RESET' });
+      if (successPrepare) {
+        dispatch({ type: 'PREPARE_RESET' });
       }
     } else {
       //async function to send Ajax request to backend and get the paypal clientID
@@ -171,27 +171,27 @@ export default function OrderScreen() {
     navigate,
     paypalDispatch,
     successPay,
-    successDeliver,
+    successPrepare,
   ]);
 
-  async function deliverOrder() {
+  async function prepareOrder() {
     try {
       //dispatch to show loading box
-      dispatch({ type: 'DELIVER_REQUEST' });
+      dispatch({ type: 'PREPARE_REQUEST' });
       //put request to update the order at the address
       const { data } = await axios.put(
-        `/api/orders/${order._id}/deliver`,
+        `/api/orders/${order._id}/prepare`,
         //no payload needed
         {},
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'DELIVER_SUCCESS', payload: data });
-      toast.success('Order is delivered');
+      dispatch({ type: 'PREPARE_SUCCESS', payload: data });
+      toast.success('Order is prepared');
     } catch (err) {
       toast.error(getError(err));
-      dispatch({ type: 'DELIVER_FAIL' });
+      dispatch({ type: 'PREPARE_FAIL' });
     }
   }
 
@@ -209,19 +209,17 @@ export default function OrderScreen() {
         <Col md={8}>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>Shipping</Card.Title>
+              <Card.Title>Customer Details</Card.Title>
               <Card.Text>
-                <strong>Name:</strong> {order.shippingAddress.fullName} <br />
-                <strong>Address: </strong> {order.shippingAddress.address},
-                {order.shippingAddress.city}, {order.shippingAddress.postalCode}
-                ,{order.shippingAddress.country}
+                <strong>Name:</strong> {order.buyerDetails.fullName} <br />
+                <strong>Student/Staff ID: </strong> {order.buyerDetails.buyerId}
               </Card.Text>
-              {order.isDelivered ? (
+              {order.isPrepared ? (
                 <MessageBox variant="success">
-                  Delivered at {order.deliveredDate}
+                  Prepared at {order.preparedDate}
                 </MessageBox>
               ) : (
-                <MessageBox variant="danger">Not Delivered</MessageBox>
+                <MessageBox variant="danger">Not Prepared Yet</MessageBox>
               )}
             </Card.Body>
           </Card>
@@ -274,21 +272,10 @@ export default function OrderScreen() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>
-                    <Col>Items</Col>
-                    <Col>RM {order.itemsPrice.toFixed(2)}</Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Delivery</Col>
-                    <Col>RM {order.deliveryPrice.toFixed(2)}</Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
                     <Col>
                       <strong>Order Total</strong>
                     </Col>
+                    <Col></Col>
                     <Col>
                       <strong>RM {order.total.toFixed(2)}</strong>
                     </Col>
@@ -299,7 +286,7 @@ export default function OrderScreen() {
                     {isPending ? (
                       <LoadingBox />
                     ) : (
-                      !userInfo.isAdmin && (
+                      userInfo && (
                         <div>
                           <PayPalButtons
                             createOrder={createOrder}
@@ -312,12 +299,12 @@ export default function OrderScreen() {
                     {loadingPay && <LoadingBox></LoadingBox>}
                   </ListGroup.Item>
                 )}
-                {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                {userInfo.isAdmin && order.isPaid && !order.isPrepared && (
                   <ListGroup.Item>
-                    {loadingDeliver && <LoadingBox></LoadingBox>}
+                    {loadingPrepare && <LoadingBox></LoadingBox>}
                     <div className="d-grid">
-                      <Button type="button" onClick={deliverOrder}>
-                        Deliver Order
+                      <Button type="button" onClick={prepareOrder}>
+                        Prepare Order
                       </Button>
                     </div>
                   </ListGroup.Item>

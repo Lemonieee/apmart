@@ -26,10 +26,8 @@ orderRouter.post(
   expressAsyncHandler(async (req, res) => {
     const newOrder = new Order({
       orderItems: req.body.orderItems.map((x) => ({ ...x, item: x._id })),
-      shippingAddress: req.body.shippingAddress,
+      buyerDetails: req.body.buyerDetails,
       paymentOption: req.body.paymentOption,
-      itemsPrice: req.body.itemsPrice,
-      deliveryPrice: req.body.deliveryPrice,
       total: req.body.total,
       user: req.user._id,
     });
@@ -113,15 +111,15 @@ orderRouter.get(
 );
 
 orderRouter.put(
-  '/:id/deliver',
+  '/:id/prepare',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
-      order.isDelivered = true;
-      order.deliveredDate = Date.now();
+      order.isPrepared = true;
+      order.preparedDate = Date.now();
       await order.save();
-      res.send({ message: 'Order Delivered' });
+      res.send({ message: 'Order Prepared' });
     } else {
       res.status(404).send({ message: 'Order Not Found' });
     }
@@ -143,7 +141,6 @@ orderRouter.put(
         id: req.body.id,
         status: req.body.status,
         update_time: req.body.update_time,
-        email_address: req.body.email_address,
       };
 
       const updatedOrder = await order.save();

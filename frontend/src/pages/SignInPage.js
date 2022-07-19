@@ -18,6 +18,7 @@ export default function SignInPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState('');
 
   const { state, dispatch: contextDispatch } = useContext(Store);
   const { userInfo } = state;
@@ -30,11 +31,10 @@ export default function SignInPage() {
         password,
       });
       contextDispatch({ type: 'SIGNIN', payload: data });
-      //save user info in local storage, the data get is from backend but converted to String
       localStorage.setItem('userInfo', JSON.stringify(data));
       //redirect to the prev page if exists, to homepage if doesn't exist
+      toast.success('Sign in successfully!');
       navigate(redirect || '/');
-      console.log(data);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -45,6 +45,12 @@ export default function SignInPage() {
       navigate(redirect);
     }
   }, [navigate, redirect, userInfo]);
+
+  const togglePassword = () => {
+    // When the handler is invoked
+    // inverse the boolean state of passwordShown
+    setShowPassword(!showPassword);
+  };
 
   return (
     <Container className="small-container">
@@ -64,14 +70,19 @@ export default function SignInPage() {
         <Form.Group className="mb-3" controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             required
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <div className="mb-3">
+        <div
+          className="mb-3"
+          style={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <Button onClick={togglePassword}>Show Password</Button>
           <Button type="submit">Sign In</Button>
         </div>
+
         <div className="mb-3">
           New customer?{' '}
           <Link to={`/signup?redirect=${redirect}`}>Create your account</Link>

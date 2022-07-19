@@ -11,40 +11,30 @@ export default function CheckoutPage() {
   const { state, dispatch: contextDispatch } = useContext(Store);
   const {
     userInfo,
-    cart: { shippingAddress },
+    cart: { buyerDetails },
   } = state;
-  const [fullName, setFullName] = useState(shippingAddress.fullName || '');
-  const [address, setAddress] = useState(shippingAddress.address || '');
-  const [city, setCity] = useState(shippingAddress.city || '');
-  const [postalCode, setPostalCode] = useState(
-    shippingAddress.postalCode || ''
-  );
+  const [fullName, setFullName] = useState(buyerDetails.fullName || '');
+  const [buyerId, setBuyerId] = useState(buyerDetails.buyerId || '');
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/signin?redirect=/checkout');
     }
   }, [userInfo, navigate]);
-  const [country, setCountry] = useState(shippingAddress.country || '');
   const submit = (e) => {
     e.preventDefault();
     contextDispatch({
-      type: 'SHIPPING_ADDRESS',
+      type: 'BUYER_DETAILS',
       payload: {
         fullName,
-        address,
-        city,
-        postalCode,
-        country,
+        buyerId,
       },
     });
     localStorage.setItem(
-      'shippingAddress',
+      'buyerDetails',
       JSON.stringify({
         fullName,
-        address,
-        city,
-        postalCode,
-        country,
+        buyerId,
       })
     );
     navigate('/payment');
@@ -57,7 +47,7 @@ export default function CheckoutPage() {
 
       <CheckoutSteps step1 step2></CheckoutSteps>
       <div className="container small-container">
-        <h1 className="my-3">Shipping Address</h1>
+        <h1 className="my-3">Customer Details</h1>
         <Form onSubmit={submit}>
           <Form.Group className="mb-3" controlId="fullName">
             <Form.Label>Full Name</Form.Label>
@@ -68,34 +58,10 @@ export default function CheckoutPage() {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="address">
-            <Form.Label>Address</Form.Label>
+            <Form.Label>Student/Staff ID</Form.Label>
             <Form.Control
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="city">
-            <Form.Label>City</Form.Label>
-            <Form.Control
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="postalCode">
-            <Form.Label>Postal Code</Form.Label>
-            <Form.Control
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="country">
-            <Form.Label>Country</Form.Label>
-            <Form.Control
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
+              value={buyerId}
+              onChange={(e) => setBuyerId(e.target.value)}
               required
             />
           </Form.Group>

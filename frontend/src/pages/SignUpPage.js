@@ -24,7 +24,7 @@ export default function SignUpPage() {
   const { state, dispatch: contextDispatch } = useContext(Store);
   const { userInfo } = state;
 
-  const signIn = async (e) => {
+  const signUp = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
@@ -40,8 +40,8 @@ export default function SignUpPage() {
       //save user info in local storage, the data get is from backend but converted to String
       localStorage.setItem('userInfo', JSON.stringify(data));
       //redirect to the prev page if exists, to homepage if doesn't exist
+      toast.success('Sign up successfully!');
       navigate(redirect || '/');
-      console.log(data);
     } catch (err) {
       toast.error(getError(err));
     }
@@ -59,7 +59,7 @@ export default function SignUpPage() {
         <title>Sign Up</title>
       </Helmet>
       <h1 className="my-3">Sign Up</h1>
-      <Form onSubmit={signIn}>
+      <Form onSubmit={signUp}>
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Name</Form.Label>
           <Form.Control onChange={(e) => setName(e.target.value)} required />

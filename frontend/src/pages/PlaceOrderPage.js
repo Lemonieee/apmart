@@ -40,8 +40,7 @@ export default function PlaceOrderPage() {
   cart.itemsPrice = roundPrice(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
   );
-  cart.deliveryPrice = cart.itemsPrice > 50 ? roundPrice(0) : roundPrice(5);
-  cart.total = cart.itemsPrice + cart.deliveryPrice;
+  cart.total = cart.itemsPrice;
 
   const placeOrder = async () => {
     try {
@@ -51,14 +50,13 @@ export default function PlaceOrderPage() {
         '/api/orders',
         {
           orderItems: cart.cartItems,
-          shippingAddress: cart.shippingAddress,
+          buyerDetails: cart.buyerDetails,
           paymentOption: cart.paymentOption,
-          itemsPrice: cart.itemsPrice,
-          deliveryPrice: cart.deliveryPrice,
           total: cart.total,
         },
         {
-          //by having this header, this API is authenticated in the server, and can be detected whether it's from hacker or logged in user
+          //by having this header, this API is authenticated in the server,
+          //and can be detected whether it's from logged in user or unauthenticated person
           headers: {
             authorization: `Bearer ${userInfo.token}`,
           },
@@ -67,7 +65,6 @@ export default function PlaceOrderPage() {
       contextDispatch({ type: 'CLEAR_CART' });
       dispatch({ type: 'ORDER_SUCCESS' });
       localStorage.removeItem('cartItems');
-      //redirect to order details page
       navigate(`/order/${data.order._id}`);
     } catch (err) {
       dispatch({ type: 'ORDER_FAIL' });
@@ -92,12 +89,10 @@ export default function PlaceOrderPage() {
         <Col md={8}>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>Shipping</Card.Title>
+              <Card.Title>Customer Details</Card.Title>
               <Card.Text>
-                <strong>Name:</strong> {cart.shippingAddress.fullName} <br />
-                <strong>Address: </strong> {cart.shippingAddress.address},
-                {cart.shippingAddress.city}, {cart.shippingAddress.postalCode},
-                {cart.shippingAddress.country}
+                <strong>Name:</strong> {cart.buyerDetails.fullName} <br />
+                <strong>Student/Staff ID: </strong> {cart.buyerDetails.buyerId}
               </Card.Text>
               <Link to="/checkout">Edit</Link>
             </Card.Body>
@@ -126,7 +121,7 @@ export default function PlaceOrderPage() {
                           alt={item.name}
                           className="img-fluid rounded img-thumbnail"
                         ></img>{' '}
-                        <Link to={`/product/${item.slug}`}>{item.name}</Link>
+                        <Link to={`/item/${item.slug}`}>{item.name}</Link>
                       </Col>
                       <Col md={3}>
                         <span>{item.quantity}</span>
@@ -147,21 +142,10 @@ export default function PlaceOrderPage() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>
-                    <Col>Items</Col>
-                    <Col>RM {cart.itemsPrice.toFixed(2)}</Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Delivery</Col>
-                    <Col>RM {cart.deliveryPrice.toFixed(2)}</Col>
-                  </Row>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Row>
                     <Col>
                       <strong> Order Total</strong>
                     </Col>
+                    <Col></Col>
                     <Col>
                       <strong>RM {cart.total.toFixed(2)}</strong>
                     </Col>

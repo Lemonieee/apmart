@@ -108,7 +108,7 @@ export default function OrderLisPage() {
               <th>DATE</th>
               <th>TOTAL</th>
               <th>PAYMENT DATE</th>
-              <th>DELIVERED</th>
+              <th>PREPARED</th>
               <th style={{ textAlign: 'center' }}>ACTIONS</th>
             </tr>
           </thead>
@@ -123,9 +123,9 @@ export default function OrderLisPage() {
                   {order.isPaid ? order.paymentDate.substring(0, 10) : 'UNPAID'}
                 </td>
                 <td>
-                  {order.isDelivered
-                    ? order.deliveredDate.substring(0, 10)
-                    : 'NOT DELIVERED'}
+                  {order.isPrepared
+                    ? order.preparedDate.substring(0, 10)
+                    : 'NOT PREPARED'}
                 </td>
                 <td style={{ textAlign: 'center' }}>
                   <Button

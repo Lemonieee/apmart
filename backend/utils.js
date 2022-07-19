@@ -60,10 +60,10 @@ export const mailgun = () =>
   });
 
 export const emailFormat = (order) => {
-  return `<h1>Thanks for shopping with us</h1>
+  return `<h1>Thanks for shopping with us!</h1>
   <p>
   Hi ${order.user.name},</p>
-  <p>We have finished processing your order.</p>
+  <p>We are processing your order.</p>
   <h2>[Order ${order._id}] (${order.createdAt.toString().substring(0, 10)})</h2>
   <table>
   <thead>
@@ -79,7 +79,7 @@ export const emailFormat = (order) => {
     <tr>
     <td>${item.name}</td>
     <td align="center">${item.quantity}</td>
-    <td align="right"> $${item.price.toFixed(2)}</td>
+    <td align="right"> RM ${item.price.toFixed(2)}</td>
     </tr>
   `
     )
@@ -87,28 +87,14 @@ export const emailFormat = (order) => {
   </tbody>
   <tfoot>
   <tr>
-  <td colspan="2">Items Price:</td>
-  <td align="right"> $${order.itemsPrice.toFixed(2)}</td>
-  </tr>
-  <tr>
   <td colspan="2"><strong>Total Price:</strong></td>
-  <td align="right"><strong> $${order.total.toFixed(2)}</strong></td>
+  <td align="right"><strong> RM ${order.total.toFixed(2)}</strong></td>
   </tr>
   <tr>
   <td colspan="2">Payment Method:</td>
   <td align="right">${order.paymentOption}</td>
   </tr>
   </table>
-  <h2>Shipping address</h2>
-  <p>
-  ${order.shippingAddress.fullName},<br/>
-  ${order.shippingAddress.address},<br/>
-  ${order.shippingAddress.city},<br/>
-  ${order.shippingAddress.country},<br/>
-  ${order.shippingAddress.postalCode}<br/>
-  </p>
-  <hr/>
-  <p>
   Thanks for shopping with us.
   </p>
   `;

@@ -219,7 +219,7 @@ export default function EditItemPage() {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="countInStock">
-              <Form.Label>Count In Stock</Form.Label>
+              <Form.Label>Stock</Form.Label>
               <Form.Control
                 value={stock}
                 onChange={(e) => setStock(e.target.value)}
