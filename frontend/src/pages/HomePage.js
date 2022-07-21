@@ -8,13 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 
-// useState [variable, func to update the variable]
-// useEffect accepts 2 params:
-// first: function second: array
-// empty array because gonna run the function inside use effect only one time after rendering the component
-// useEffect to call API and get item from backend
-
-/*first param: state
+/*first param: current state
   second param:  action that change the state and create new state
   compare three type of action  */
 

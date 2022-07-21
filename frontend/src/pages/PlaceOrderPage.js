@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import Axios from 'axios';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -28,6 +28,9 @@ const reducer = (state, action) => {
 
 export default function PlaceOrderPage() {
   const navigate = useNavigate();
+  const params = useParams(); // /item/:id
+  //rename id as itemId
+  const { id: itemId } = params;
   const [{ loading }, dispatch] = useReducer(reducer, {
     //default value
     loading: false,
@@ -62,6 +65,16 @@ export default function PlaceOrderPage() {
           },
         }
       );
+      // const { quantity } = await Axios.put(
+      //   `/api/items/${itemId}`,
+      //   {
+      //     _id: itemId,
+      //     quantity,
+      //   },
+      //   {
+      //     headers: { Authorization: `Bearer ${userInfo.token}` },
+      //   }
+      // );
       contextDispatch({ type: 'CLEAR_CART' });
       dispatch({ type: 'ORDER_SUCCESS' });
       localStorage.removeItem('cartItems');

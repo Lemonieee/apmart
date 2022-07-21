@@ -1,8 +1,7 @@
 import express from 'express';
-import data from './data.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import seedRouter from './routes/seedRoutes.js';
+//import seedRouter from './routes/seedRoutes.js';
 import itemRouter from './routes/itemRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
@@ -32,7 +31,6 @@ app.get('/api/keys/paypal', (req, res) => {
 });
 
 app.use('/api/upload', uploadRouter);
-app.use('/api/seed', seedRouter);
 
 //get two params (url going to serve, function that respond to this API)
 // app.get('/api/items', (req, res) => {
@@ -50,7 +48,6 @@ app.use((err, req, res, next) => {
 // get the port from the process
 // process.env.PORT is a convention to get free port, if not, then 5000
 const port = process.env.PORT || 5000;
-
 // server starts and ready to responding to the frontend
 // first param : port | second param : callback func run when server is ready
 app.listen(port, () => {

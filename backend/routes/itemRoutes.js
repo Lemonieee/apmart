@@ -57,7 +57,22 @@ itemRouter.put(
     }
   })
 );
-
+/////////////////////////////////////////////////////////////////
+itemRouter.put(
+  '/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const itemId = req.params.id;
+    const item = await Item.findById(itemId);
+    if (item) {
+      item.stock = item.stock - req.body.quantity;
+      await item.save();
+    } else {
+      res.status(404).send({ message: 'Item Not Found' });
+    }
+  })
+);
+//////////////////////////////////////////////////////////////////
 itemRouter.delete(
   '/:id',
   isAuth,
