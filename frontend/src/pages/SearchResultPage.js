@@ -35,24 +35,24 @@ const reducer = (state, action) => {
 
 const prices = [
   {
-    name: 'RM1 to RM10',
-    value: '1-10',
+    name: 'RM1 to RM5',
+    value: '1-5',
   },
   {
-    name: 'RM11 to RM20',
-    value: '11-20',
+    name: 'RM5 to RM10',
+    value: '5-10',
   },
   {
-    name: 'RM21 to RM30',
-    value: '21-30',
+    name: 'RM10 to RM15',
+    value: '10-15',
   },
   {
-    name: 'RM31 to RM40',
-    value: '31-40',
+    name: 'RM15 to RM20',
+    value: '15-20',
   },
   {
-    name: 'RM41 to RM50',
-    value: '41-50',
+    name: 'RM20 to RM25',
+    value: '20-25',
   },
 ];
 

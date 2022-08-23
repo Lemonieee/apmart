@@ -3,8 +3,6 @@ import expressAsyncHandler from 'express-async-handler';
 import Item from '../models/itemModel.js';
 import { isAuth, isAdmin } from '../utils.js';
 
-//itemRoutes for all item related API
-
 const itemRouter = express.Router();
 
 //returns all the products
@@ -13,21 +11,21 @@ itemRouter.get('/', async (req, res) => {
   res.send(items);
 });
 
+//add item
 itemRouter.post(
   '/',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newItem = new Item({
-      name: 'sample name ' + Date.now(),
-      slug: 'sample-name-' + Date.now(),
-      image: '/images/p1.jpg',
-      price: 0,
-      category: 'sample category',
-      brand: 'sample brand',
-      stock: 0,
-      reviewNum: 0,
-      description: 'sample description',
+      name: req.body.name,
+      slug: req.body.slug,
+      image: req.body.image,
+      price: req.body.price,
+      category: req.body.category,
+      brand: req.body.brand,
+      stock: req.body.stock,
+      description: req.body.description,
     });
     const item = await newItem.save();
     res.send({ message: 'Item Created', item });
@@ -88,7 +86,8 @@ itemRouter.delete(
   })
 );
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 9;
+const ITEM_PAGE_SIZE = 8;
 
 itemRouter.get(
   '/admin',
@@ -97,12 +96,14 @@ itemRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
+    const pageSize = query.pageSize || ITEM_PAGE_SIZE;
 
     const items = await Item.find()
       .skip(pageSize * (page - 1))
       .limit(pageSize);
+
     const countItems = await Item.countDocuments();
+
     res.send({
       items,
       countItems,

@@ -31,8 +31,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import DashboardPage from './pages/DashboardPage';
 import AdminRoute from './components/AdminRoute';
 import ItemListPage from './pages/ItemListPage';
+import AddItemPage from './pages/AddItemPage';
 import EditItemPage from './pages/EditItemPage';
-import OrderLisPage from './pages/OrderListPage';
+import OrderListPage from './pages/OrderListPage';
 import UserListPage from './pages/UserListPage';
 import EditUserPage from './pages/EditUserPage';
 
@@ -238,7 +239,7 @@ function App() {
                 path="/admin/orders"
                 element={
                   <AdminRoute>
-                    <OrderLisPage />
+                    <OrderListPage />
                   </AdminRoute>
                 }
               ></Route>
@@ -263,6 +264,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <ItemListPage />
+                  </AdminRoute>
+                }
+              ></Route>
+              <Route
+                path="/admin/item/add"
+                element={
+                  <AdminRoute>
+                    <AddItemPage />
                   </AdminRoute>
                 }
               ></Route>

@@ -54,6 +54,13 @@ const reducer = (state, action) => {
 };
 
 export default function ItemListPage() {
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const page = sp.get('page') || 1;
+
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const [
     {
       loading,
@@ -70,14 +77,6 @@ export default function ItemListPage() {
     error: '',
   });
 
-  const navigate = useNavigate();
-  const { search } = useLocation();
-  const sp = new URLSearchParams(search);
-  const page = sp.get('page') || 1;
-
-  const { state } = useContext(Store);
-  const { userInfo } = state;
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -87,7 +86,12 @@ export default function ItemListPage() {
         });
 
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
-      } catch (err) {}
+      } catch (err) {
+        dispatch({
+          type: 'FETCH_FAIL',
+          payload: getError(err),
+        });
+      }
     };
 
     if (successDelete) {
@@ -97,30 +101,10 @@ export default function ItemListPage() {
     }
   }, [page, userInfo, successDelete]);
 
-  const addNewItem = async () => {
-    try {
-      dispatch({ type: 'ADD_REQUEST' });
-      const { data } = await axios.post(
-        '/api/items',
-        {},
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-      toast.success('Item created successfully');
-      dispatch({ type: 'ADD_SUCCESS' });
-      navigate(`/admin/item/${data.item._id}`);
-    } catch (err) {
-      toast.error(getError(error));
-      dispatch({
-        type: 'ADD_FAIL',
-      });
-    }
-  };
-
   const deleteItem = async (item) => {
     if (window.confirm('Are you sure to delete?')) {
       try {
+        dispatch({ type: 'DELETE_REQUEST' });
         await axios.delete(`/api/items/${item._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
@@ -146,7 +130,7 @@ export default function ItemListPage() {
         </Col>
         <Col className="col text-end">
           <div>
-            <Button type="button" onClick={addNewItem}>
+            <Button type="button" onClick={() => navigate(`/admin/item/add`)}>
               Add New Item
             </Button>
           </div>
@@ -210,7 +194,7 @@ export default function ItemListPage() {
           </table>
           <div>
             {/*Array from javascript, pass the pages as param, call the keys on it 
-                returns an array from 0 to pages - 1 and use map function to convert it to a link*/}
+                returns an array from 0 to pages + 1 and use map function to convert it to a link*/}
             {[...Array(pages).keys()].map((x) => (
               <Link
                 className={x + 1 === Number(page) ? 'btn text-bold' : 'btn'}

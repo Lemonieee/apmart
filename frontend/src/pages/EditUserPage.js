@@ -46,7 +46,7 @@ export default function EditUserPage() {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  //const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +57,7 @@ export default function EditUserPage() {
         });
         setName(data.name);
         setEmail(data.email);
-        //setIsAdmin(data.isAdmin);
+        setIsAdmin(data.isAdmin);
         dispatch({ type: 'FETCH_SUCCESS' });
       } catch (err) {
         dispatch({
@@ -75,7 +75,7 @@ export default function EditUserPage() {
       dispatch({ type: 'UPDATE_REQUEST' });
       await axios.put(
         `/api/users/${userId}`,
-        { _id: userId, name, email },
+        { _id: userId, name, email, isAdmin },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -123,7 +123,14 @@ export default function EditUserPage() {
                 required
               />
             </Form.Group>
-
+            <Form.Check
+              className="mb-3"
+              type="checkbox"
+              id="isAdmin"
+              label="isAdmin"
+              checked={isAdmin}
+              onChange={(e) => setIsAdmin(e.target.checked)}
+            />
             <div className="mb-3">
               <Button disabled={loadingUpdate} type="submit">
                 Update
